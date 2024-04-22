@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# File to store tasks
+tasks_file="tasks.txt"
+
+# Check if the user has provided any arguments
+if [ $# -eq 0 ]; then
+    # If no arguments provided, default to read mode
+    # Check if the tasks file exists
+    if [ ! -f "$tasks_file" ]; then
+        echo "No tasks found."
+        exit 0
+    fi
+    
+    # Check if there are any tasks
+    if [ ! -s "$tasks_file" ]; then
+        echo "No tasks found."
+        exit 0
+    fi
+    
+    # Display the contents of the tasks file
+    cat "$tasks_file"
+    exit 0
+fi
+
+# Add Mode: Check if the user has provided a task name as an argument
+if [ "$1" = "new" ]; then
+    if [ $# -eq 1 ]; then
+        echo "Usage: $0 add <task_name>"
+        exit 1
+    fi
+
+    # Task name provided by the user
+    task_name="$2"
+
+    # Append the task name to the tasks file
+    echo "$task_name" >> "$tasks_file"
+
+    echo "Task '$task_name' added to '$tasks_file'."
+    exit 0
+fi
+
+# md Mode: Open tasks file in nvim
+if [ "$1" = "md" ]; then
+    nvim "$tasks_file"
+    exit 0
+fi
+
+# If none of the above conditions match
+echo "Usage: $0 [add <task_name>] | [md]"
+exit 1
